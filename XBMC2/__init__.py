@@ -24,7 +24,7 @@ class XBMC2(Plugin):
       try:
          json = jsonrpclib.Server('%s/jsonrpc' %(get_url()))
       except IOError: 
-         print "ERROR (XBMC Plugin): Incomplete XBMC login information, please edit ~/editme.py" 
+         print "ERROR (XBMC Plugin): Incomplete XBMC login information, please edit ~/XBMC2/editme.py" 
 
       # Utility Functions
 
@@ -72,7 +72,7 @@ class XBMC2(Plugin):
              json.Player.PlayPause(playerid=1)
           elif librarytype == 'Music':
              json.Player.PlayPause(playerid=0)
-          self.say(" ", "%s player paused/resumed" %(librarytype))
+          self.say("%s player paused/resumed" %(librarytype), "")
           self.complete_request()    
 
       #Video Related Functions
@@ -95,6 +95,7 @@ class XBMC2(Plugin):
                    found = 1
                    self.say("Loading..." + '\n\n' "Show: '%s'" %(tvst) + '\n\n' + "Episode: '%s'" %(tvsl), " ")
                    play(json,{'episodeid': episodeid}, 1)
+                   break
              if found == 0: 
                 self.say("Couldn't find the episode you were looking for, sorry!")     
              self.complete_request()

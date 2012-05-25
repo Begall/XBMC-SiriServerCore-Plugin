@@ -79,6 +79,7 @@ class XBMC2(Plugin):
 
       @register("en-US", u"(?:Watch|Put On) (?P<title>.*(?=season)|.*(?!season))(?:season (?P<season>[\d]+) episode (?P<episode>[\d]+))?")
       def mainvideo_command(self, speech, langauge, matchedRegex):
+          found = 0
           stripped_title = ''.join(ch for ch in matchedRegex.group('title') if ch.isalnum()).lower()
           result = json.VideoLibrary.GetEpisodes(properties = ['showtitle'])
           if matchedRegex.group('season') != None:

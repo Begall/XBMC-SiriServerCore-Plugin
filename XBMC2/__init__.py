@@ -1,5 +1,6 @@
 from plugin import *
 from editme import GetLogin 
+import string
 
 try:
     import jsonrpclib 
@@ -66,9 +67,9 @@ class XBMC2(Plugin):
           self.say("%s player stopped" %(librarytype))
           self.complete_request()  
  
-      @register("en-US", ".*(pause|paws|place|holes|polls|kohls|kohl's|post|resume) (?P<librarytype>[\w]+ player.*")
+      @register("en-US", ".*(pause|paws|place|holes|polls|kohls|kohl's|post|resume) (?P<librarytype>[\w]+) player.*")
       def pause_command(self, speech, langauge, matchedRegex):
-          librarytype = string.capwords(matchedRegex.group('librarype'))
+          librarytype = string.capwords(matchedRegex.group('librarytype'))
           if librarytype == 'Video': 
              json.Player.PausePlay(playerid=1)
           elif librarytype == 'Music':

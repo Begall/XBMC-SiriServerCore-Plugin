@@ -1,9 +1,9 @@
 # Fill these in with your XBMC log in info! 
 
-TypeHostHere = 'localhost'
-TypePortHere = '8082' 
-TypeUserNameHere = 'htpc'
-TypePasswordHere = 'password'
+TypeHostHere = ''
+TypePortHere = '' 
+TypeUserNameHere = ''
+TypePasswordHere = ''
 
 def GetLogin(host=TypeHostHere, port=TypePortHere, username=TypeUserNameHere, password=TypePasswordHere): 
         x = [host, port, username, password]

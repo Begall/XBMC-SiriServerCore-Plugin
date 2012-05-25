@@ -1,4 +1,4 @@
-#from plugin import *
+from plugin import *
 from editme import GetLogin 
 
 try:
@@ -17,7 +17,7 @@ def play(json, item, playerid):
     json.Playlist.Add(playlistid=playerid, item=item)
     json.Player.Open({ 'playlistid' : playerid})
 
-class XBMC2():
+class XBMC2(Plugin):
 
       global json
       try:

@@ -81,8 +81,8 @@ class XBMC2(Plugin):
       def mainvideo_command(self, speech, langauge, matchedRegex):
           found = 0
           stripped_title = ''.join(ch for ch in matchedRegex.group('title') if ch.isalnum()).lower()
-          result = json.VideoLibrary.GetEpisodes(properties = ['showtitle'])
           if matchedRegex.group('season') != None:
+             result = json.VideoLibrary.GetEpisodes(properties = ['showtitle'])
              if len(matchedRegex.group('episode')) > 1: 
                 EpNo = matchedRegex.group('season') + 'x' + matchedRegex.group('episode')
              else: 
@@ -98,3 +98,17 @@ class XBMC2(Plugin):
              if found == 0: 
                 self.say("Couldn't find the episode you were looking for, sorry!")     
              self.complete_request()
+          else: 
+             result = json.VideoLibrary.GetMovies()
+             for movie in result['movies']:
+                if stripped_title in ''.join(ch for ch in movie['label'] if ch.isalnum()).lower():
+                   movieid = movie['movieid']
+                   mn = movie['label']
+                   found = 1 
+                   self.say("Loading..." + '\n\n Title :  ' + '%s' %(mn), "")
+                   play(json,{'movieid': movieid}, 1)
+                   break 
+             if found == 0:
+                self.say("Couldn't find the movie you were looking for, sorry!") 
+             self.complete_request()      
+                      

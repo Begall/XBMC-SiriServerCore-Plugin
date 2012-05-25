@@ -24,11 +24,9 @@ class XBMC2(Plugin):
       try:
          json = jsonrpclib.Server('%s/jsonrpc' %(get_url()))
       except IOError: 
-         print "ERROR: Incomplete XBMC login information, please edit ~/editme.py" 
-
+         print "ERROR (XBMC Plugin): Incomplete XBMC login information, please edit ~/editme.py" 
 
       # Utility Functions
-
 
       @register("en-US", "xbmc help") 
       def help(self, speech, langauge, matchedRegex):
@@ -55,7 +53,7 @@ class XBMC2(Plugin):
           self.say("%s library cleaned" %(librarytype)) 
           self.complete_request()
 
-     # Player Controls
+      # Player Controls
              
       @register("en-US", ".*stop (?P<librarytype>[\w]+) player.*")
       def stop_command(self, speech, langauge, matchedRegex):
@@ -77,4 +75,25 @@ class XBMC2(Plugin):
           self.say(" ", "%s player paused/resumed" %(librarytype))
           self.complete_request()    
 
+      #Video Related Functions
 
+      @register("en-US", u"(?:Watch|Put On) (?P<title>.*(?=season)|.*(?!season))(?:season (?P<season>[\d]+) episode (?P<episode>[\d]+))?")
+      def mainvideo_command(self, speech, langauge, matchedRegex):
+          stripped_title = ''.join(ch for ch in matchedRegex.group('title') if ch.isalnum()).lower()
+          result = json.VideoLibrary.GetEpisodes(properties = ['showtitle'])
+          if matchedRegex.group('season') != None:
+             if len(matchedRegex.group('episode')) > 1: 
+                EpNo = matchedRegex.group('season') + 'x' + matchedRegex.group('episode')
+             else: 
+                EpNo = matchedRegex.group('season') + 'x' + '0' + matchedRegex.group('episode')
+             for tvshow in result['episodes']:
+                if stripped_title in ''.join(ch for ch in tvshow['showtitle'] if ch.isalnum()).lower() and EpNo in tvshow['label']:
+                   episodeid = tvshow['episodeid']
+                   tvst = tvshow['showtitle']
+                   tvsl = tvshow['label']
+                   found = 1
+                   self.say("Loading..." + '\n\n' "Show: '%s'" %(tvst) + '\n\n' + "Episode: '%s'" %(tvsl), " ")
+                   play(json,{'episodeid': episodeid}, 1)
+             if found == 0: 
+                self.say("Couldn't find the episode you were looking for, sorry!")     
+             self.complete_request()

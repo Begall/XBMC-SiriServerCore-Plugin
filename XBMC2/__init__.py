@@ -69,9 +69,9 @@ class XBMC2(Plugin):
       def pause_command(self, speech, langauge, matchedRegex):
           librarytype = string.capwords(matchedRegex.group('librarytype'))
           if librarytype == 'Video': 
-             json.Player.PausePlay(playerid=1)
+             json.Player.PlayPause(playerid=1)
           elif librarytype == 'Music':
-             json.Player.PausePlay(playerid=0)
+             json.Player.PlayPause(playerid=0)
           self.say(" ", "%s player paused/resumed" %(librarytype))
           self.complete_request()    
 

@@ -1,7 +1,11 @@
-#from plugin import *
+# Fill these in with your XBMC log in info! 
 
+TypeHostHere = 'localhost'
+TypePortHere = '8082' 
+TypeUserNameHere = 'htpc'
+TypePasswordHere = 'password'
 
-def GetLogin(host='192.168.0.1', port='8082', username='Begall', password='password', mac_address=None): 
-        x = [host, port, username, password, mac_address]
+def GetLogin(host=TypeHostHere, port=TypePortHere, username=TypeUserNameHere, password=TypePasswordHere): 
+        x = [host, port, username, password]
         return x 
         

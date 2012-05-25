@@ -113,3 +113,30 @@ class XBMC2(Plugin):
                 self.say("Couldn't find the movie you were looking for, sorry!") 
              self.complete_request()      
                       
+      #Music Related Functions 
+
+      @register("en-US",".*list (?P<artistname>[^^]+) (album|albums)")
+      def list_music(self, speech, langauge, matchedRegex):
+          found = 0
+          albumList = ''
+          stripped_artistname = ''.join(ch for ch in matchedRegex.group('artistname') if ch.isalnum()).lower()
+          if stripped_artistname == 'latest': 
+             result = json.AudioLibrary.GetRecentlyAddedAlbums(properties=['artist'])
+             matchedArtist = 'Latest Added' 
+             for index, album in enumerate(result['albums']):
+                albumList = albumList + '%s. %s' %(index, album['label']) + '\n' + '  - %s' %(album['artist']) + '\n\n'
+                found = 1
+          else:
+             result = json.AudioLibrary.GetAlbums(properties=['artist'])
+             for index, album in enumerate(result['albums']):
+                if stripped_artistname in ''.join(ch for ch in album['artist'] if ch.isalnum()).lower():
+                   albumList = albumList + '%s. %s' %(index, album['label']) + '\n\n'
+                   matchedArtist = album['artist']
+                   found = 1
+          if found == 0: 
+             self.say("Sorry, I couldn't find the artist you're looking for")
+          else:
+             self.say("Albums for '%s' :" %(matchedArtist) + '\n\n' + '%s' %(albumList), "Here you go...")
+          self.complete_request()
+                     
+                

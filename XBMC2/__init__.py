@@ -115,7 +115,7 @@ class XBMC2(Plugin):
                       
       #Music Related Functions 
 
-      @register("en-US",".*list (?P<artistname>[^^]+) (album|albums)")
+      @register("en-US", ".*list (?P<artistname>[^^]+) (album|albums)")
       def list_music(self, speech, langauge, matchedRegex):
           found = 0
           albumList = ''
@@ -139,4 +139,24 @@ class XBMC2(Plugin):
              self.say("Albums for '%s' :" %(matchedArtist) + '\n\n' + '%s' %(albumList), "Here you go...")
           self.complete_request()
                      
-                
+      @register("en-US", ".*listen to (?P<musictype>[\w]+) (?P<title>[^^]+)")
+      def play_music(self, speech, langauge, matchedRegex):
+          found = 0
+          musictype = matchedRegex.group('musictype')
+          stripped_title = ''.join(ch for ch in matchedRegex.group('title') if ch.isalnum()).lower()
+          if musictype == 'album' or 'albums':
+             result = json.AudioLibrary.GetAlbums(properties=['artist'])
+             for index, album in enumerate(result['albums']):
+                if stripped_title in ''.join(ch for ch in album['label'] if ch.isalnum()).lower():
+                   albumid = album['albumid']
+                   name, artist = album['label'], album['artist']
+                   found = 1
+                   break 
+             if found == 0:
+                self.say("Couldn't find the album you were looking for, sorry!") 
+             else: 
+                play(json, {'albumid': albumid}, 0)
+                self.say('Now Playing... \n\n Title: %s' %(name) + '\n' + '        By: %s' %(artist), "")
+          else: 
+             self.say("Can only search for albums at the moment, sorry!") 
+          self.complete_request()

@@ -18,6 +18,12 @@ def play(json, item, playerid):
     json.Playlist.Add(playlistid=playerid, item=item)
     json.Player.Open({ 'playlistid' : playerid})
 
+def hackygettitle(id, mtype):
+    if mtype == 'movie':
+       y = json.VideoLibrary.GetMovieDetails(movieid=id)
+       x = y['moviedetails']['label']
+    return x
+
 class XBMC2(Plugin):
 
       global json

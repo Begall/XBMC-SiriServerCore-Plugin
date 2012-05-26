@@ -55,7 +55,7 @@ class XBMC2(Plugin):
           if librarytype == 'Video':
              json.VideoLibrary.Clean()
           elif librarytype == 'Music':
-             json.AudioLibray.Scan()
+             json.AudioLibrary.Clean()
           self.say("%s library cleaned" %(librarytype)) 
           self.complete_request()
 

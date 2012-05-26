@@ -117,19 +117,6 @@ class XBMC2(Plugin):
              result = json.VideoLibrary.GetMovies()
              for movie in result['movies']:
                  if stripped_title in ''.join(ch for ch in movie['label'] if ch.isalnum()).lower():
-                   episodeid, tvst, tvsl, found = tvshow['episodeid'], tvshow['showtitle'], tvshow['label'], found + 1
-                   self.say("Loading..." + '\n\n' "Show: '%s'" %(tvst) + '\n\n' + "Episode: '%s'" %(tvsl), "")
-                   play(json,{'episodeid': episodeid}, 1)
-                   break
-             if found == 0:
-                self.say("Couldn't find the episode you were looking for, sorry!")
-             self.complete_request()
-          else:
-             foundinfo = []
-             listofmatches = ''
-             result = json.VideoLibrary.GetMovies()
-             for movie in result['movies']:
-                 if stripped_title in ''.join(ch for ch in movie['label'] if ch.isalnum()).lower():
                    stored_info = tuple([movie['movieid'], movie['label']])
                    foundinfo.append(stored_info)
                    found = found + 1

@@ -77,6 +77,15 @@ class XBMC2(Plugin):
 
       #Video Related Functions
 
+      @register("en-US", ".*list latest (movies|movie)")
+      def listlatestmovies(self, speech, langauge):
+          matches = ''
+          result = json.VideoLibrary.GetRecentlyAddedMovies()
+          for i, movie in enumerate(result['movies']):
+             matches = matches + "%i. %s\n\n" %(i, movie['label'])
+          self.say("Latest added movies...\n\n%s" %(matches), "")
+          self.complete_request()
+
       @register("en-US", u"(?:Watch|Put On) (?P<title>.*(?=season)|.*(?!season))(?:season (?P<season>[\d]+) episode (?P<episode>[\d]+))?")
       def mainvideo_command(self, speech, langauge, matchedRegex):
           found = 0

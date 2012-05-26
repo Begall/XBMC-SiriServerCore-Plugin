@@ -71,7 +71,7 @@ class XBMC2(Plugin):
           self.say("%s player stopped" %(librarytype))
           self.complete_request()  
  
-      @register("en-US", ".*(pause|paws|place|holes|polls|kohls|kohl's|post|resume) (?P<librarytype>[\w]+) player.*")
+      @register("en-US", ".*(pause|paws|place|holes|polls|kohls|kohl's|post|resume|porn) (?P<librarytype>[\w]+) player.*")
       def pause_command(self, speech, langauge, matchedRegex):
           librarytype = string.capwords(matchedRegex.group('librarytype'))
           if librarytype == 'Video': 
@@ -92,7 +92,7 @@ class XBMC2(Plugin):
           self.say("Latest added movies...\n\n%s" %(matches), "")
           self.complete_request()
 
-      @register("en-US", u"(?:Watch|Watchin|Watching) (?P<title>.*(?=season)|.*(?!season))(?:season (?P<season>[\d]+) episode (?P<episode>[\d]+))?")
+      @register("en-US", "(?:Watch|Watchin|Watching) (?P<title>.*(?=season)|.*(?!season))(?:season (?P<season>[\d]+) episode (?P<episode>[\d]+))?")
       def mainvideo_command(self, speech, langauge, matchedRegex):
           found = 0
           stripped_title = ''.join(ch for ch in matchedRegex.group('title') if ch.isalnum()).lower()
@@ -117,9 +117,9 @@ class XBMC2(Plugin):
              result = json.VideoLibrary.GetMovies()
              for movie in result['movies']:
                  if stripped_title in ''.join(ch for ch in movie['label'] if ch.isalnum()).lower():
-                   stored_info = tuple([movie['movieid'], movie['label']])
-                   foundinfo.append(stored_info)
-                   found = found + 1
+                    stored_info = tuple([movie['movieid'], movie['label']])
+                    foundinfo.append(stored_info)
+                    found = found + 1
              if found > 1:
                 for y, z in foundinfo:
                    listofmatches = listofmatches + "%s. %s\n\n" %(y, re.sub("u|'|,|\(|\)", "", z))
@@ -128,7 +128,7 @@ class XBMC2(Plugin):
                 response = self.ask("", "Pick a number to play")
                 try:
                    if int(response) in a:
-                      self.say("Loading... \n\nTitle : %s" %(hackygettitle(int(response), 'movie')), "")
+                      self.say("Loading... \n\nTitle : '%s'" %(hackygettitle(int(response), 'movie')), "")
                       play(json,{'movieid': int(response)}, 1)
                    else:
                       self.say("That wasn't a choice, try again")
@@ -136,7 +136,7 @@ class XBMC2(Plugin):
                    self.say("That wasn't a number silly!")
                    self.complete_request()
              elif found == 1:
-                self.say("Loading..." + '\n\nTitle : %s' %(stored_info[1]), "")
+                self.say("Loading...\n\nTitle : '%s'" %(stored_info[1]), "")
                 play(json,{'movieid': stored_info[0]}, 1)
              elif found == 0:
                 self.say("Couldn't find the movie you were looking for, sorry!")
@@ -150,11 +150,9 @@ class XBMC2(Plugin):
           albumList = ''
           stripped_artistname = ''.join(ch for ch in matchedRegex.group('artistname') if ch.isalnum()).lower()
           if stripped_artistname == 'latest': 
-             result = json.AudioLibrary.GetRecentlyAddedAlbums(properties=['artist'])
-             matchedArtist = 'Latest Added' 
+             result, matchedArtist = json.AudioLibrary.GetRecentlyAddedAlbums(properties=['artist']), 'Latest Added'
              for index, album in enumerate(result['albums']):
-                albumList = albumList + '%s. %s' %(index, album['label']) + '\n' + '  - %s' %(album['artist']) + '\n\n'
-                found = 1
+                albumList, found = albumList + "%s. %s\n - '%s'\n\n" %(index, album['label'], album['artist']), 1 
           else:
              result = json.AudioLibrary.GetAlbums(properties=['artist'])
              for index, album in enumerate(result['albums']):
@@ -163,7 +161,7 @@ class XBMC2(Plugin):
           if found == 0: 
              self.say("Sorry, I couldn't find the artist you're looking for")
           else:
-             self.say("Albums for '%s' :" %(matchedArtist) + '\n\n' + '%s' %(albumList), "Here you go...")
+             self.say("Albums for '%s' :\n\n'%s'" %(matchedArtist, albumList), "Here you go...")
           self.complete_request()
                      
       @register("en-US", ".*listen to (?P<musictype>[\w]+) (?P<title>[^^]+)")
@@ -181,7 +179,7 @@ class XBMC2(Plugin):
                 self.say("Couldn't find the album you were looking for, sorry!") 
              else: 
                 play(json, {'albumid': albumid}, 0)
-                self.say('Now Playing... \n\n Title: %s' %(name) + '\n' + '        By: %s' %(artist), "")
+                self.say("Now Playing...\n\nTitle : '%s'\n        - %s" %(name, artist), "")
           else: 
              self.say("Can only search for albums at the moment, sorry!") 
           self.complete_request()

@@ -157,11 +157,11 @@ class XBMC2(Plugin):
              result = json.AudioLibrary.GetAlbums(properties=['artist'])
              for index, album in enumerate(result['albums']):
                 if stripped_artistname in ''.join(ch for ch in album['artist'] if ch.isalnum()).lower():
-                   albumList, matchedArtist, found = albumList + '%s. %s' %(index, album['label']) + '\n\n', album['artist'], 1
+                   albumList, matchedArtist, found = albumList + "%s. %s\n\n" %(index, album['label']), album['artist'], 1
           if found == 0: 
              self.say("Sorry, I couldn't find the artist you're looking for")
           else:
-             self.say("Albums for '%s' :\n\n'%s'" %(matchedArtist, albumList), "Here you go...")
+             self.say("Albums for '%s' :\n\n%s" %(matchedArtist, albumList), "Here you go...")
           self.complete_request()
                      
       @register("en-US", ".*listen to (?P<musictype>[\w]+) (?P<title>[^^]+)")

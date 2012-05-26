@@ -89,10 +89,7 @@ class XBMC2(Plugin):
                 EpNo = matchedRegex.group('season') + 'x' + '0' + matchedRegex.group('episode')
              for tvshow in result['episodes']:
                 if stripped_title in ''.join(ch for ch in tvshow['showtitle'] if ch.isalnum()).lower() and EpNo in tvshow['label']:
-                   episodeid = tvshow['episodeid']
-                   tvst = tvshow['showtitle']
-                   tvsl = tvshow['label']
-                   found = 1
+                   episodeid, tvst, tvsl, found = tvshow['episodeid'], tvshow['showtitle'], tvshow['label'], 1
                    self.say("Loading..." + '\n\n' "Show: '%s'" %(tvst) + '\n\n' + "Episode: '%s'" %(tvsl), " ")
                    play(json,{'episodeid': episodeid}, 1)
                    break
@@ -103,9 +100,7 @@ class XBMC2(Plugin):
              result = json.VideoLibrary.GetMovies()
              for movie in result['movies']:
                 if stripped_title in ''.join(ch for ch in movie['label'] if ch.isalnum()).lower():
-                   movieid = movie['movieid']
-                   mn = movie['label']
-                   found = 1 
+                   movieid, mn, found = movie['movieid'], movie['label'], 1
                    self.say("Loading..." + '\n\n Title :  ' + '%s' %(mn), "")
                    play(json,{'movieid': movieid}, 1)
                    break 
@@ -130,9 +125,7 @@ class XBMC2(Plugin):
              result = json.AudioLibrary.GetAlbums(properties=['artist'])
              for index, album in enumerate(result['albums']):
                 if stripped_artistname in ''.join(ch for ch in album['artist'] if ch.isalnum()).lower():
-                   albumList = albumList + '%s. %s' %(index, album['label']) + '\n\n'
-                   matchedArtist = album['artist']
-                   found = 1
+                   albumList, matchedArtist, found = albumList + '%s. %s' %(index, album['label']) + '\n\n', album['artist'], 1
           if found == 0: 
              self.say("Sorry, I couldn't find the artist you're looking for")
           else:
@@ -148,9 +141,7 @@ class XBMC2(Plugin):
              result = json.AudioLibrary.GetAlbums(properties=['artist'])
              for index, album in enumerate(result['albums']):
                 if stripped_title in ''.join(ch for ch in album['label'] if ch.isalnum()).lower():
-                   albumid = album['albumid']
-                   name, artist = album['label'], album['artist']
-                   found = 1
+                   albumid, name, artist, found  = album['albumid'], album['label'], album['artist'], 1
                    break 
              if found == 0:
                 self.say("Couldn't find the album you were looking for, sorry!") 

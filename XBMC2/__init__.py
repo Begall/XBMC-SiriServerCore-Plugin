@@ -92,36 +92,68 @@ class XBMC2(Plugin):
           self.say("Latest added movies...\n\n%s" %(matches), "")
           self.complete_request()
 
-      @register("en-US", u"(?:Watch|Put On) (?P<title>.*(?=season)|.*(?!season))(?:season (?P<season>[\d]+) episode (?P<episode>[\d]+))?")
+      @register("en-US", u"(?:Watch|Watchin|Watching) (?P<title>.*(?=season)|.*(?!season))(?:season (?P<season>[\d]+) episode (?P<episode>[\d]+))?")
       def mainvideo_command(self, speech, langauge, matchedRegex):
           found = 0
           stripped_title = ''.join(ch for ch in matchedRegex.group('title') if ch.isalnum()).lower()
           if matchedRegex.group('season') != None:
              result = json.VideoLibrary.GetEpisodes(properties = ['showtitle'])
-             if len(matchedRegex.group('episode')) > 1: 
+             if len(matchedRegex.group('episode')) > 1:
                 EpNo = matchedRegex.group('season') + 'x' + matchedRegex.group('episode')
-             else: 
+             else:
                 EpNo = matchedRegex.group('season') + 'x' + '0' + matchedRegex.group('episode')
              for tvshow in result['episodes']:
                 if stripped_title in ''.join(ch for ch in tvshow['showtitle'] if ch.isalnum()).lower() and EpNo in tvshow['label']:
-                   episodeid, tvst, tvsl, found = tvshow['episodeid'], tvshow['showtitle'], tvshow['label'], 1
-                   self.say("Loading..." + '\n\n' "Show: '%s'" %(tvst) + '\n\n' + "Episode: '%s'" %(tvsl), " ")
+                   episodeid, tvst, tvsl, found = tvshow['episodeid'], tvshow['showtitle'], tvshow['label'], found + 1
+                   self.say("Loading..." + '\n\n' "Show: '%s'" %(tvst) + '\n\n' + "Episode: '%s'" %(tvsl), "")
                    play(json,{'episodeid': episodeid}, 1)
                    break
-             if found == 0: 
-                self.say("Couldn't find the episode you were looking for, sorry!")     
+             if found == 0:
+                self.say("Couldn't find the episode you were looking for, sorry!")
              self.complete_request()
-          else: 
+          else:
+             foundinfo = []
+             listofmatches = ''
              result = json.VideoLibrary.GetMovies()
              for movie in result['movies']:
-                if stripped_title in ''.join(ch for ch in movie['label'] if ch.isalnum()).lower():
-                   movieid, mn, found = movie['movieid'], movie['label'], 1
-                   self.say("Loading..." + '\n\n Title :  ' + '%s' %(mn), "")
-                   play(json,{'movieid': movieid}, 1)
-                   break 
+                 if stripped_title in ''.join(ch for ch in movie['label'] if ch.isalnum()).lower():
+                   episodeid, tvst, tvsl, found = tvshow['episodeid'], tvshow['showtitle'], tvshow['label'], found + 1
+                   self.say("Loading..." + '\n\n' "Show: '%s'" %(tvst) + '\n\n' + "Episode: '%s'" %(tvsl), "")
+                   play(json,{'episodeid': episodeid}, 1)
+                   break
              if found == 0:
-                self.say("Couldn't find the movie you were looking for, sorry!") 
-             self.complete_request()      
+                self.say("Couldn't find the episode you were looking for, sorry!")
+             self.complete_request()
+          else:
+             foundinfo = []
+             listofmatches = ''
+             result = json.VideoLibrary.GetMovies()
+             for movie in result['movies']:
+                 if stripped_title in ''.join(ch for ch in movie['label'] if ch.isalnum()).lower():
+                   stored_info = tuple([movie['movieid'], movie['label']])
+                   foundinfo.append(stored_info)
+                   found = found + 1
+             if found > 1:
+                for y, z in foundinfo:
+                   listofmatches = listofmatches + "%s. %s\n\n" %(y, re.sub("u|'|,|\(|\)", "", z))
+                a, b = [[x[i] for x in foundinfo] for i in (0,1)]
+                self.say("Found multiple matches...\n\n%s" %(listofmatches), "")
+                response = self.ask("", "Pick a number to play")
+                try:
+                   if int(response) in a:
+                      self.say("Loading... \n\nTitle : %s" %(hackygettitle(int(response), 'movie')), "")
+                      play(json,{'movieid': int(response)}, 1)
+                   else:
+                      self.say("That wasn't a choice, try again")
+                except ValueError:
+                   self.say("That wasn't a number silly!")
+                   self.complete_request()
+             elif found == 1:
+                self.say("Loading..." + '\n\nTitle : %s' %(stored_info[1]), "")
+                play(json,{'movieid': stored_info[0]}, 1)
+             elif found == 0:
+                self.say("Couldn't find the movie you were looking for, sorry!")
+             self.complete_request()
                       
       #Music Related Functions 
 

@@ -41,9 +41,9 @@ class XBMC2(Plugin):
              AnswerTitle, AnswerThumb, AnswerPlot = AnswerObject(title='Title',lines=[AnswerObjectLine(text=m[1])]), AnswerObject(title='',lines=[AnswerObjectLine(image=m[0])]), AnswerObject(title='Plot',lines=[AnswerObjectLine(text="'%s'" %(m[2]))])
              view1 = AnswerSnippet(answers=[AnswerTitle, AnswerThumb, AnswerPlot])
           if mtype == 'tvshow':
-             y = json.VideoLibrary.GetEpisodeDetails(episodeid=id, properties =['thumbnail', 'plot', 'showtitle'])['episodedetails']
-             m = ['http://%s:%s/vfs/%s' %(GetLogin()[2], GetLogin()[3], y['thumbnail']), y['label'], y['plot'], y['showtitle']]
-             AnswerShowtitle, AnswerEpisode, AnswerThumb, AnswerPlot = AnswerObject(title='Show',lines=[AnswerObjectLine(text=m[3])]), AnswerObject(title='Episode',lines=[AnswerObjectLine(text=m[1])]), AnswerObject(title='',lines=[AnswerObjectLine(image=m[0])]), AnswerObject(title='Plot', lines=[AnswerObjectLine(text="'%s'" %(m[2]))])
+             y = json.VideoLibrary.GetEpisodeDetails(episodeid=id, properties =['thumbnail', 'plot', 'showtitle', 'season', 'episode'])['episodedetails']
+             m = ['http://%s:%s/vfs/%s' %(GetLogin()[2], GetLogin()[3], y['thumbnail']), y['label'], y['plot'], y['showtitle'], y['season'], y['episode']]
+             AnswerShowtitle, AnswerEpisode, AnswerThumb, AnswerPlot = AnswerObject(title='Show',lines=[AnswerObjectLine(text=m[3])]), AnswerObject(title='Episode',lines=[AnswerObjectLine(text="%ix%i. %s" %(m[4], m[5], m[1]))]), AnswerObject(title='',lines=[AnswerObjectLine(image=m[0])]), AnswerObject(title='Plot', lines=[AnswerObjectLine(text="'%s'" %(m[2]))])
              view1 = AnswerSnippet(answers=[AnswerShowtitle, AnswerEpisode, AnswerThumb, AnswerPlot]) 
           view = UIAddViews(self.refId)
           view.views = [view1]

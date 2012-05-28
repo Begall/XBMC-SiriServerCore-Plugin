@@ -13,11 +13,13 @@ Full credit to Gustavo Hoirisch/Pieter Janssens, original creators
 
 Install Instructions:
 
-1. Unpack and copy the XBMC2 folder into your 'plugins/' folder in the SiriServerCore install
+1. Open terminal and type 'easy_install jsonrpclib' 
 
-2. Open plugins.conf in the main SiriServerCore directory and add 'XBMC2' in a new line at the bottom of the list
+2. Unpack and copy the XBMC2 folder into your 'plugins/' folder in the SiriServerCore install
 
-3. Open editme.py in the plugins/XBMC2 folder and add the host/port/username/password of your XBMC installation
+3. Open plugins.conf in the main SiriServerCore directory and add 'XBMC2' in a new line at the bottom of the list
+
+4. Open editme.py in the plugins/XBMC2 folder and add the host/port/username/password of your XBMC installation
 
 
 

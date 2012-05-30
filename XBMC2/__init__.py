@@ -171,12 +171,12 @@ class XBMC2(Plugin):
           if stripped_artistname == 'latest': 
              result, matchedArtist = json.AudioLibrary.GetRecentlyAddedAlbums(properties=['artist']), 'Latest Added'
              for index, album in enumerate(result['albums']):
-                albumList, found = albumList + "%s. %s\n - '%i'\n\n" %(index, album['label'], album['artist']), 1 
+                albumList, found = albumList + "%i. %s\n - '%s'\n\n" %(index, album['label'], album['artist']), 1 
           else:
              result = json.AudioLibrary.GetAlbums(properties=['artist'])
              for index, album in enumerate(result['albums']):
                 if stripped_artistname in ''.join(ch for ch in album['artist'] if ch.isalnum()).lower():
-                   albumList, matchedArtist, found = albumList + "%s. %s\n\n" %(index, album['label']), album['artist'], 1
+                   albumList, matchedArtist, found = albumList + "%i. %s\n\n" %(index, album['label']), album['artist'], 1
           if found == 0: 
              self.say("Sorry, I couldn't find the artist you're looking for")
           else:

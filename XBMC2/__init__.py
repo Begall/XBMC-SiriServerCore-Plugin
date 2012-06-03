@@ -37,18 +37,22 @@ class XBMC2(Plugin):
       def CreateAnswerObject(self, id, mtype):
           if mtype == 'movie':
              y = json.VideoLibrary.GetMovieDetails(movieid=id, properties=['thumbnail', 'plot'])['moviedetails']
-             m = ['http://%s:%s/vfs/%s' %(GetLogin()[2], GetLogin()[3], y['thumbnail']), y['label'], y['plot']]
-             AnswerTitle, AnswerThumb, AnswerPlot = AnswerObject(title='Title',lines=[AnswerObjectLine(text=m[1])]), AnswerObject(title='',lines=[AnswerObjectLine(image=m[0])]), AnswerObject(title='Plot',lines=[AnswerObjectLine(text="'%s'" %(m[2]))])
+             m = ['http://%s:%s/vfs/%s' %(GetLogin()[0], GetLogin()[1], y['thumbnail']), y['label'], y['plot']]
+             AnswerTitle, AnswerThumb, AnswerPlot = AnswerObject(title='Title',lines=[AnswerObjectLine(text=m[1])]), AnswerObject(title='Thumbnail',lines=[AnswerObjectLine(image=m[0])]), AnswerObject(title='Plot',lines=[AnswerObjectLine(text="'%s'" %(m[2]))])
              view1 = AnswerSnippet(answers=[AnswerTitle, AnswerThumb, AnswerPlot])
           if mtype == 'tvshow':
-             y = json.VideoLibrary.GetEpisodeDetails(episodeid=id, properties =['thumbnail', 'plot', 'showtitle', 'season', 'episode'])['episodedetails']
-             m = ['http://%s:%s/vfs/%s' %(GetLogin()[2], GetLogin()[3], y['thumbnail']), y['label'], y['plot'], y['showtitle'], y['season'], y['episode']]
-             AnswerShowtitle, AnswerEpisode, AnswerThumb, AnswerPlot = AnswerObject(title='Show',lines=[AnswerObjectLine(text=m[3])]), AnswerObject(title='Episode',lines=[AnswerObjectLine(text="%ix%i. %s" %(m[4], m[5], m[1]))]), AnswerObject(title='',lines=[AnswerObjectLine(image=m[0])]), AnswerObject(title='Plot', lines=[AnswerObjectLine(text="'%s'" %(m[2]))])
-             view1 = AnswerSnippet(answers=[AnswerShowtitle, AnswerEpisode, AnswerThumb, AnswerPlot]) 
+             y = json.VideoLibrary.GetEpisodeDetails(episodeid=id, properties=['thumbnail', 'plot', 'showtitle', 'season', 'episode'])['episodedetails']
+             m = ['http://%s:%s/vfs/%s' %(GetLogin()[0], GetLogin()[1], y['thumbnail']), y['label'], y['plot'], y['showtitle'], y['season'], y['episode']]
+             AnswerShowtitle, AnswerEpisode, AnswerThumb, AnswerPlot = AnswerObject(title='Show',lines=[AnswerObjectLine(text=m[3])]), AnswerObject(title='Episode',lines=[AnswerObjectLine(text="%ix%i. %s" %(m[4], m[5], m[1]))]), AnswerObject(title='Thumbnail',lines=[AnswerObjectLine(image="%s"%(m[0]))]), AnswerObject(title='Plot', lines=[AnswerObjectLine(text="'%s'" %(m[2]))])
+             view1 = AnswerSnippet(answers=[AnswerShowtitle, AnswerEpisode, AnswerThumb, AnswerPlot])
+          if mtype == 'album':
+             y = json.AudioLibrary.GetAlbumDetails(albumid=id, properties=['thumbnail', 'year', 'artist', 'title', 'description'])['albumdetails']
+             m = [y['thumbnail'], y['title'], y['artist'], y['year'], y['description']]
+             AnswerTitle, AnswerThumb, AnswerInfo = AnswerObject(title='Album',lines=[AnswerObjectLine(text="%s (%s) by: %s" %(m[1], m[3], m[2]))]), AnswerObject(title='Art',lines=[AnswerObjectLine(image=m[0])]), AnswerObject(title='Description',lines=[AnswerObjectLine(text=m[4])])
+             view1 = AnswerSnippet(answers=[AnswerTitle, AnswerThumb, AnswerInfo])
           view = UIAddViews(self.refId)
           view.views = [view1]
           return view
-
 
       # Utility Functions
 

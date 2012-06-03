@@ -1,6 +1,6 @@
 from plugin import *
 from editme import GetLogin 
-from siriObjects.uiObjects import UIAddViews
+from siriObjects.uiObjects import UIAddViews, UIListItem, UIDisambiguationList
 from siriObjects.answerObjects import AnswerSnippet, AnswerObject, AnswerObjectLine
 import string
 

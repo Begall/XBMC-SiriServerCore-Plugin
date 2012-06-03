@@ -120,11 +120,16 @@ class XBMC2(Plugin):
 
       @register("en-US", ".*list latest (movies|movie)")
       def listlatestmovies(self, speech, langauge):
-          matches = ''
-          result = json.VideoLibrary.GetRecentlyAddedMovies()
-          for i, movie in enumerate(result['movies']):
-             matches = matches + "%i. %s\n\n" %(i, movie['label'])
-          self.say("Latest added movies...\n\n%s" %(matches), "")
+          lst = UIDisambiguationList()
+          lst.items = []
+          x = UIAddViews(self.refId)
+          x.dialogPhase = x.DialogPhaseCompletionValue
+          result = json.VideoLibrary.GetRecentlyAddedMovies(limits={'end': 10})
+          for movie in result['movies']:
+             lst.items.append(CreateListItem(movie['movieid'], 'movie'))
+          x.views = [lst]
+          self.say("", "Last 10 movies added...")
+          self.sendRequestWithoutAnswer(x)
           self.complete_request()
 
       @register("en-US", "(?:Watch|Watchin|Watching) (?P<title>.*(?=season)|.*(?!season))(?:season (?P<season>[\d]+) episode (?P<episode>[\d]+))?")

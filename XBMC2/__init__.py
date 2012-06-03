@@ -61,8 +61,8 @@ class XBMC2(Plugin):
           if mtype == 'album':
              y = json.AudioLibrary.GetAlbumDetails(albumid=id, properties=['thumbnail', 'year', 'artist', 'title', 'description'])['albumdetails']
              m = [y['thumbnail'], y['title'], y['artist'], y['year'], y['description']]
-             AnswerTitle, AnswerThumb, AnswerInfo = AnswerObject(title='Album',lines=[AnswerObjectLine(text="%s (%s) by: %s" %(m[1], m[3], m[2]))]), AnswerObject(title='Art',lines=[AnswerObjectLine(image=m[0])]), AnswerObject(title='Description',lines=[AnswerObjectLine(text=m[4])])
-             view1 = AnswerSnippet(answers=[AnswerTitle, AnswerThumb, AnswerInfo])
+             AnswerTitle, AnswerThumb, AnswerInfo, AnswerArtist = AnswerObject(title='Album',lines=[AnswerObjectLine(text="%s (%s)" %(m[1], m[3]))]), AnswerObject(title='Art',lines=[AnswerObjectLine(image=m[0])]), AnswerObject(title='Description',lines=[AnswerObjectLine(text=m[4])]), AnswerObject(title='Artist', lines=[AnswerObjectLine(text=m[2])]) 
+             view1 = AnswerSnippet(answers=[AnswerTitle, AnswerArtist, AnswerThumb, AnswerInfo])
           view = UIAddViews(self.refId)
           view.views = [view1]
           return view

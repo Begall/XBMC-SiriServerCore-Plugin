@@ -27,17 +27,17 @@ def hackygettitle(id, mtype):
     return x
 
 def CreateListItem(id, mtype):
+    item = UIListItem()
     if mtype == 'movie':
        y = json.VideoLibrary.GetMovieDetails(movieid=id, properties=['tagline', 'year', 'rating'])['moviedetails']
        m = [int(id), y['label'], y['year'], y['rating'], y['tagline']]
+       item.selectionResponse = "%s (%s)\n\n'%s'" %(m[1], m[2], m[4])
     if mtype == 'album':
        y = json.AudioLibrary.GetAlbumDetails(albumid=id, properties=['title', 'description', 'artist', 'genre', 'year'])['albumdetails']
        m = [int(id), y['title'], y['artist'], y['year'], y['description']]
-    item = UIListItem()
+       item.selectionResponse = "%s (%s)\n\n'%s'" %(m[1], m[3], m[4])
     item.title = "%s (%s)" %(m[1], m[2])
-    item.selectionResponse = "%s (%s)\n\n'%s'" %(m[1], m[3], m[4])
-    item.speakableSelectionResponse = "%s. %s" %(m[1], m[4])
-    return item    
+    return item        
 
 class XBMC2(Plugin):
 

@@ -218,15 +218,15 @@ class XBMC2(Plugin):
           stripped_title = ''.join(ch for ch in matchedRegex.group('title') if ch.isalnum()).lower()
           if musictype == 'album' or 'albums':
              result = json.AudioLibrary.GetAlbums(properties=['artist'])
-             for index, album in enumerate(result['albums']):
+             for album in result['albums']:
                 if stripped_title in ''.join(ch for ch in album['label'] if ch.isalnum()).lower():
-                   albumid, name, artist, found  = album['albumid'], album['label'], album['artist'], 1
-                   break 
+                   z, found = self.CreateAnswerObject(album['albumid'], 'album'), 1
+                   play(json, {'albumid': album['albumid']}, 0)
+                   break
              if found == 0:
-                self.say("Couldn't find the album you were looking for, sorry!") 
-             else: 
-                play(json, {'albumid': albumid}, 0)
-                self.say("Now Playing...\n\nTitle : '%s'\n        - %s" %(name, artist), "")
-          else: 
-             self.say("Can only search for albums at the moment, sorry!") 
+                self.say("Couldn't find the album you were looking for, sorry!")
+             else:
+                self.say(self.sendRequestWithoutAnswer(z), "Now playing...")
+          else:
+             self.say("Can only search for albums at the moment, sorry!")
           self.complete_request()

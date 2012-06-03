@@ -187,8 +187,10 @@ class XBMC2(Plugin):
 
       @register("en-US", ".*list (?P<artistname>[^^]+) (album|albums)")
       def list_music(self, speech, langauge, matchedRegex):
-          found, lst, lst.items = 0, UIDisambiguationList(), []
-          anchor, anchor.dialogPhase = UIAddViews(self.refId), anchor.DialogPhaseCompletionValue
+          found, lst = 0, UIDisambiguationList()
+          lst.items = []
+          anchor = UIAddViews(self.refId)
+          anchor.dialogPhase = anchor.DialogPhaseCompletionValue
           stripped_artistname = ''.join(ch for ch in matchedRegex.group('artistname') if ch.isalnum()).lower()
           if stripped_artistname == 'latest':
              result = json.AudioLibrary.GetRecentlyAddedAlbums(properties=['artist'], limits={'end': 10})

@@ -187,22 +187,28 @@ class XBMC2(Plugin):
 
       @register("en-US", ".*list (?P<artistname>[^^]+) (album|albums)")
       def list_music(self, speech, langauge, matchedRegex):
-          found = 0
-          albumList = ''
+          found, lst, lst.items = 0, UIDisambiguationList(), []
+          anchor, anchor.dialogPhase = UIAddViews(self.refId), anchor.DialogPhaseCompletionValue
           stripped_artistname = ''.join(ch for ch in matchedRegex.group('artistname') if ch.isalnum()).lower()
-          if stripped_artistname == 'latest': 
-             result, matchedArtist = json.AudioLibrary.GetRecentlyAddedAlbums(properties=['artist']), 'Latest Added'
-             for index, album in enumerate(result['albums']):
-                albumList, found = albumList + "%i. %s\n - '%s'\n\n" %(index, album['label'], album['artist']), 1 
+          if stripped_artistname == 'latest':
+             result = json.AudioLibrary.GetRecentlyAddedAlbums(properties=['artist'], limits={'end': 10})
+             for album in result['albums']:
+                 lst.items.append(CreateListItem(album['albumid'], 'album'))
+             anchor.views = [lst]
+             self.say("", "Last 10 albums added...")
+             self.sendRequestWithoutAnswer(anchor)
           else:
              result = json.AudioLibrary.GetAlbums(properties=['artist'])
-             for index, album in enumerate(result['albums']):
+             for album in result['albums']:
                 if stripped_artistname in ''.join(ch for ch in album['artist'] if ch.isalnum()).lower():
-                   albumList, matchedArtist, found = albumList + "%i. %s\n\n" %(index, album['label']), album['artist'], 1
-          if found == 0: 
-             self.say("Sorry, I couldn't find the artist you're looking for")
-          else:
-             self.say("Albums for '%s' :\n\n%s" %(matchedArtist, albumList), "Here you go...")
+                   lst.items.append(CreateListItem(album['albumid'], 'album'))
+                   found = 1
+             if found == 0:
+                self.say("Sorry, I couldn't find the artist you're looking for")
+             else:
+                anchor.views = [lst]
+                self.say("", "Albums for '%s'" %(string.capwords(matchedRegex.group('artistname'))))
+                self.sendRequestWithoutAnswer(anchor)
           self.complete_request()
                      
       @register("en-US", ".*listen to (?P<musictype>[\w]+) (?P<title>[^^]+)")

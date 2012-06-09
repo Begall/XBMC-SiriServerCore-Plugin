@@ -150,39 +150,53 @@ class XBMC2(Plugin):
                    break
              if found == 0:
                 self.say("Couldn't find the episode you were looking for, sorry!")
-             self.complete_request()
-          else:
+          else: 
              foundinfo = []
-             matches = ''
-             result = json.VideoLibrary.GetMovies()
-             for movie in result['movies']:
-                 if stripped_title in ''.join(ch for ch in movie['label'] if ch.isalnum()).lower():
-                    v, found = movie['movieid'], found + 1  
-                    foundinfo.append(v)
-             if found > 1:
-                for x in foundinfo:
-                   matches = matches + '%s. %s\n\n' %(x, hackygettitle(x, 'movie'))
-                self.say("Found multiple matches...\n\n%s" %(matches), "")
-                response = self.ask("", "Pick a number to play")
-                try:
-                   if int(response) in foundinfo:
-                      z = self.CreateAnswerObject(int(response), 'movie')
-                      self.say(self.sendRequestWithoutAnswer(z), "Now Playing...")
-                      play(json,{'movieid': int(response)}, 1)
-                   else:
-                      self.say("That wasn't a choice, try again")
-                except ValueError:
-                   self.say("That wasn't a number silly!")
-                   self.complete_request()
-             elif found == 1:
-                for x in foundinfo:
-                   z = self.CreateAnswerObject(x, 'movie')
-                   self.say(self.sendRequestWithoutAnswer(z), "Now playing...") 
-                   play(json,{'movieid': x}, 1)
-             elif found == 0:
-                self.say("Couldn't find the movie you were looking for, sorry!")
-             self.complete_request()
-                      
+             firstword, rest = matchedRegex.group('title').split(' ', 1)
+             if firstword == 'random' or 'randoms':
+                result = json.VideoLibrary.GetEpisodes(properties = ['showtitle'])
+                for tvshow in result['episodes']:
+                   if ''.join(ch for ch in rest if ch.isalnum()).lower() in ''.join(ch for ch in tvshow['showtitle'] if ch.isalnum()).lower():
+                      foundinfo.append(tvshow['episodeid'])
+                      found = 1
+                if found == 1:
+                   pickone = random.choice(foundinfo)
+                   z = self.CreateAnswerObject(pickone, 'tvshow')
+                   self.say(self.sendRequestWithoutAnswer(z), "Now Playing...")
+                   play(json,{'episodeid': pickone}, 1)
+                else:
+                   self.say("Couldn't find that show, sorry!")
+             else:
+                matches = ''
+                result = json.VideoLibrary.GetMovies()
+                for movie in result['movies']:
+                    if stripped_title in ''.join(ch for ch in movie['label'] if ch.isalnum()).lower():
+                       v, found = movie['movieid'], found + 1
+                       foundinfo.append(v)
+                if found > 1:
+                   for x in foundinfo:
+                      matches = matches + '%s. %s\n\n' %(x, hackygettitle(x, 'movie'))
+                   self.say("Found multiple matches...\n\n%s" %(matches), "")
+                   response = self.ask("", "Pick a number to play")
+                   try:
+                      if int(response) in foundinfo:
+                         z = self.CreateAnswerObject(int(response), 'movie')
+                         self.say(self.sendRequestWithoutAnswer(z), "Now Playing...")
+                         play(json,{'movieid': int(response)}, 1)
+                      else:
+                         self.say("That wasn't a choice, try again")
+                   except ValueError:
+                      self.say("That wasn't a number silly!")
+                      self.complete_request()
+                elif found == 1:
+                   for x in foundinfo:
+                      z = self.CreateAnswerObject(x, 'movie')
+                      self.say(self.sendRequestWithoutAnswer(z), "Now playing...")
+                      play(json,{'movieid': x}, 1)
+                elif found == 0:
+                   self.say("Couldn't find the movie you were looking for, sorry!")
+          self.complete_request()
+                     
       #Music Related Functions 
 
       @register("en-US", ".*list (?P<artistname>[^^]+) (album|albums)")

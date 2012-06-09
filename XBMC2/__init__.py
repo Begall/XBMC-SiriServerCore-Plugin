@@ -79,7 +79,7 @@ class XBMC2(Plugin):
          librarytype = string.capwords(matchedRegex.group('librarytype'))
          if librarytype == 'Video':
             json.VideoLibrary.Scan()
-         elif librarytype == 'Music':
+         elif librarytype == 'Music' or 'Audio':
             json.AudioLibrary.Scan()
          self.say("%s library updated" %(librarytype))
          self.complete_request()
@@ -89,7 +89,7 @@ class XBMC2(Plugin):
           librarytype = string.capwords(matchedRegex.group('librarytype'))
           if librarytype == 'Video':
              json.VideoLibrary.Clean()
-          elif librarytype == 'Music':
+          elif librarytype == 'Music' or 'Audio':
              json.AudioLibrary.Clean()
           self.say("%s library cleaned" %(librarytype)) 
           self.complete_request()
@@ -101,7 +101,7 @@ class XBMC2(Plugin):
           librarytype = string.capwords(matchedRegex.group('librarytype'))
           if librarytype == 'Video': 
              json.Player.Stop(playerid=1)
-          elif librarytype == 'Music':
+          elif librarytype == 'Music' or 'Audio':
              json.Player.Stop(playerid=0)
           self.say("%s player stopped" %(librarytype))
           self.complete_request()  
@@ -111,7 +111,7 @@ class XBMC2(Plugin):
           librarytype = string.capwords(matchedRegex.group('librarytype'))
           if librarytype == 'Video': 
              json.Player.PlayPause(playerid=1)
-          elif librarytype == 'Music':
+          elif librarytype == 'Music' or 'Audio':
              json.Player.PlayPause(playerid=0)
           self.say("%s player paused/resumed" %(librarytype), "")
           self.complete_request()    

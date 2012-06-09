@@ -2,7 +2,7 @@ from plugin import *
 from editme import GetLogin 
 from siriObjects.uiObjects import UIAddViews, UIListItem, UIDisambiguationList
 from siriObjects.answerObjects import AnswerSnippet, AnswerObject, AnswerObjectLine
-import string
+import string, random
 
 try:
     import jsonrpclib 

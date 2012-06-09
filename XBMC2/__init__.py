@@ -81,7 +81,7 @@ class XBMC2(Plugin):
             json.VideoLibrary.Scan()
          elif librarytype == 'Music' or 'Audio':
             json.AudioLibrary.Scan()
-         self.say("%s library updated" %(librarytype))
+         self.say("%s library update in progress..." %(librarytype))
          self.complete_request()
       
       @register("en-US", ".*clean (?P<librarytype>[\w]+) library.*")
@@ -91,7 +91,7 @@ class XBMC2(Plugin):
              json.VideoLibrary.Clean()
           elif librarytype == 'Music' or 'Audio':
              json.AudioLibrary.Clean()
-          self.say("%s library cleaned" %(librarytype)) 
+          self.say("%s library clean in progress..." %(librarytype)) 
           self.complete_request()
 
       # Player Controls

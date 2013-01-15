@@ -282,13 +282,16 @@ class XBMC2(Plugin):
                    response = self.ask("", "Pick a number to play")
                          
                    try:
-                      selection = foundinfo[int(response)-1]   # Go back to 0 starting index 
+                      if int(response) > 0: 
+                          selection = foundinfo[int(response)-1]   # Go back to 0 starting index 
+                      else: 
+                          raise IndexError
                 
                    except IndexError:
                       self.say("That wasn't a choice, try again") # When index does not exist 
                       self.complete_request()                    
  
-                   except NameError, ValueError: 
+                   except ValueError: 
                       self.say("That wasn't a number silly!")
                       self.complete_request()                    
                 
